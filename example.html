@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Example</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.3/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.0.3/dist/leaflet.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+
+    <style>
+        #map {
+            height: 90vh;
+            /* width: 800px;
+            height: 600px; */
+            border: 1px solid black;
+            z-index: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="map"></div>
+    </div>
+
+    <script>
+        var url = 'geodata/4258_postnummeromrader.geojson';  // my GeoJSON data source, in same folder as my html page.
+
+        var map = L.map('map').setView([70, 11], 3);
+
+        var kartverket_norgeskart_bakgrunn = new L.tileLayer('https://opencache.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=norgeskart_bakgrunn&zoom={z}&x={x}&y={y}', {
+            attribution: '<a href="https://www.kartverket.no/">Kartverket</a>'
+        }).addTo(map);
+
+        // Null variable that will hold layer
+        var postcodeLayer = L.geoJson(null, { onEachFeature: forEachFeature, style: style });
+
+        $.getJSON(url, function (data) {
+            postcodeLayer.addData(data["postnummeromrader.postnummeromradegrense"])
+            postcodeLayer.addData(data["postnummeromrader.postnummeromrade"])
+        });
+
+        postcodeLayer.addTo(map);
+
+        // for Layer Control
+        var baseMaps = {
+            "Kartverket Norgeskart Bakgrunn": kartverket_norgeskart_bakgrunn
+        };
+
+        var overlayMaps = {
+            "Postnummerområder": postcodeLayer
+        };
+
+        //Add layer control
+        L.control.layers(baseMaps, overlayMaps).addTo(map);
+
+
+        // Set style function that sets fill color property
+        function style(feature) {
+            return {
+                fillColor: 'white',
+                fillOpacity: 0.5,
+                weight: 2,
+                opacity: 1,
+                color: 'darkblue',
+                dashArray: '3'
+            };
+        }
+        var highlight = {
+            'fillColor': 'yellow',
+            'weight': 2,
+            'opacity': 1
+        };
+
+        function forEachFeature(feature, layer) {
+
+            var popupContent = "tada!";
+
+            layer.bindPopup(popupContent);
+
+            layer.on("click", function (e) {
+                // postcodeLayer.setStyle(style); //resets layer colors
+                layer.setStyle(highlight);  //highlights selected.
+            });
+        }
+
+    </script>
+</body>
+
+</html>
