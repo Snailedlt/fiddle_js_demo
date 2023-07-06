@@ -82,12 +82,14 @@
                 "</br>POSTSTED: "+ feature.properties.poststed +
                 "</br>KOMMUNE: "+ feature.properties.kommune +'</p>';
 
-            layer.bindPopup(popupContent);
+            layer.bindPopup(popupContent); // needed to show initial popup
 
             layer.on("click", function (e) {
-                if(layer.options.fillColor == "darkgreen"){
+                if(layer.options.fillColor == highlight.fillColor){
+                    layer.bindPopup(popupContent); // show popup when selecting
                     layer.setStyle(un_highlight);
                 } else {
+                    layer.unbindPopup(popupContent); // don't show popup when deselecting
                     layer.setStyle(highlight);
                 }
                 // postcodeLayer.setStyle(style); //resets layer colors
