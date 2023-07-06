@@ -57,7 +57,7 @@
         // Set style function that sets fill color property
         function style(feature) {
             return {
-                fillColor: 'white',
+                fillColor: 'blue',
                 fillOpacity: 0.5,
                 weight: 2,
                 opacity: 1,
@@ -66,20 +66,29 @@
             };
         }
         var highlight = {
-            'fillColor': 'yellow',
-            'weight': 2,
-            'opacity': 1
+            'fillColor': 'darkgreen',
+        };
+
+        var un_highlight = {
+            'fillColor': 'blue',
         };
 
         function forEachFeature(feature, layer) {
 
-            var popupContent = "tada!";
+            var popupContent = "<p><b>POSTNUMMER: </b>"+ feature.properties.postnummer +
+                "</br>POSTSTED: "+ feature.properties.poststed +
+                "</br>KOMMUNE: "+ feature.properties.kommune +'</p>';
 
             layer.bindPopup(popupContent);
 
             layer.on("click", function (e) {
+                if(layer.options.fillColor == "darkgreen"){
+                    layer.setStyle(un_highlight);
+                } else {
+                    layer.setStyle(highlight);
+                }
                 // postcodeLayer.setStyle(style); //resets layer colors
-                layer.setStyle(highlight);  //highlights selected.
+                //layer.setStyle(highlight);  //highlights selected.
             });
         }
 
